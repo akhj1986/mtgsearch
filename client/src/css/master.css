@@ -208,16 +208,16 @@ body {
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 2px; }
-  .color-check.Blue {
+  .color-check.blue {
     color: blue; }
-  .color-check.Red {
+  .color-check.red {
     color: Red; }
-  .color-check.White {
+  .color-check.white {
     color: White;
     text-shadow: 1px 1px 2px black; }
-  .color-check.Black {
+  .color-check.black {
     color: Black; }
-  .color-check.Green {
+  .color-check.green {
     color: Green; }
 
 .colorless-radio {

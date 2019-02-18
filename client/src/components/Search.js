@@ -11,12 +11,34 @@ class Search extends Component {
       results: [],
       status: "Enter search above",
       colors: [],
-      Blue: false,
-      Red: false,
-      White: false,
-      Green: false,
-      Black: false,
-      colorState: ""
+      colorState: "",
+      cardColor: [
+        {
+          color: "blue",
+          checked: false,
+          identity: "U"
+        },
+        {
+          color: "white",
+          checked: false,
+          identity: "W"
+        },
+        {
+          color: "red",
+          checked: false,
+          identity: "R"
+        },
+        {
+          color: "green",
+          checked: false,
+          identity: "G"
+        },
+        {
+          color: "black",
+          checked: false,
+          identity: "B"
+        }
+      ]
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -86,9 +108,18 @@ class Search extends Component {
           c.push(name);
         }
         return {
-          [name]: checked,
           colors: c,
-          colorState: "hasColor"
+          colorState: "hasColor",
+          cardColor: prevState.cardColor.map(card => {
+            if (card.color !== name) {
+              return card;
+            }
+
+            return {
+              ...card,
+              checked: !card.checked
+            };
+          })
         };
       });
     } else {
@@ -100,15 +131,18 @@ class Search extends Component {
 
   handleRadioChange(event) {
     const { name, value } = event.target;
-    this.setState({
-      [name]: value,
-      Blue: false,
-      Red: false,
-      White: false,
-      Green: false,
-      Black: false,
-      colors: []
-    });
+    this.setState(prevState => {
+      return {
+        [name]: value,
+        colors: [],
+        cardColor: prevState.cardColor.map(card => {
+          return {
+            ...card,
+            checked: false
+          };
+        })
+      };
+    }, console.log(this.state.cardColor));
   }
 
   resultStatus(message) {
@@ -135,32 +169,6 @@ class Search extends Component {
   }
 
   render() {
-    const magicColors = [
-      { color: "White", check: this.state.White },
-      { color: "Blue", check: this.state.Blue },
-      { color: "Black", check: this.state.Black },
-      { color: "Red", check: this.state.Red },
-      { color: "Green", check: this.state.Green }
-    ];
-    const colorChecks = magicColors.map(c => {
-      return (
-        <label key={c.color} className={`color-check ${c.color}`}>
-          <input
-            type="checkbox"
-            name={c.color}
-            value={c.color}
-            checked={c.check}
-            onChange={this.handleChange}
-            className={c.color}
-          />
-          {c.color}
-        </label>
-      );
-    });
-    const cardDisplay = this.state.results.map(card => {
-      return <DisplayImage srcData={card} key={card.id} />;
-    });
-
     return (
       <div className="search-page">
         <h1>Magic: The Gathering</h1>
@@ -174,7 +182,21 @@ class Search extends Component {
             onChange={this.handleChange}
           />
           <div className="color-container">
-            {colorChecks}
+            {this.state.cardColor.map(c => {
+              return (
+                <label key={c.identity} className={`color-check ${c.color}`}>
+                  <input
+                    type="checkbox"
+                    name={c.color}
+                    value={c.color}
+                    checked={c.checked}
+                    onChange={this.handleChange}
+                    className={c.color}
+                  />
+                  {c.identity}
+                </label>
+              );
+            })}
             <label className="colorless-radio">
               <input
                 type="radio"
@@ -189,7 +211,11 @@ class Search extends Component {
           <button type="submit">Search</button>
         </form>
         <h1 className="search-status">{this.state.status}</h1>
-        <div className="display-board">{cardDisplay}</div>
+        <div className="display-board">
+          {this.state.results.map(card => {
+            return <DisplayImage srcData={card} key={card.id} />;
+          })}
+        </div>
       </div>
     );
   }
