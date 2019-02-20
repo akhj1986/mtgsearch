@@ -1,120 +1,67 @@
 import React, { Component } from "react";
-import DisplayImage from "./DisplayImage";
-
-const mtg = require("mtgsdk");
+import { connect } from "react-redux";
+import { searchQuery } from "../store/actions/searchQuery";
+import ResultsBoard from "./search/ResultsBoard";
+import ColorChoice from "./search/ColorChoice";
+import RarityChoice from "./search/RarityChoice";
+import Types from "./search/Types";
+import SubTypes from "./search/SubTypes";
+import searchTerms from "./search/searchTerms.json";
+import styles from "./Search.module.scss";
 
 class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
       cardName: "",
-      results: [],
-      status: "Enter search above",
       colors: [],
-      colorState: "",
-      cardColor: [
-        {
-          color: "blue",
-          checked: false,
-          identity: "U"
-        },
-        {
-          color: "white",
-          checked: false,
-          identity: "W"
-        },
-        {
-          color: "red",
-          checked: false,
-          identity: "R"
-        },
-        {
-          color: "green",
-          checked: false,
-          identity: "G"
-        },
-        {
-          color: "black",
-          checked: false,
-          identity: "B"
-        }
-      ]
+      colorless: false,
+      colorsCard: searchTerms.colorsCard,
+      noOtherColor: false,
+      rarity: [],
+      rarityCard: searchTerms.rarityCard,
+      typeCard: searchTerms.typeCard,
+      type: "",
+      subTypesCard: searchTerms.subTypesCard,
+      subType: "",
+      advancedSearch: false,
+      advancedButtonText: "Advanced Search"
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.uniqBy = this.uniqBy.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  uniqBy = arr => {
-    const cb = o => o.name;
-    this.setState(() => {
+  handleClick() {
+    this.setState(prevState => {
       return {
-        results: [
-          ...arr
-            .sort((a, b) => {
-              let A = a.name.toUpperCase();
-              let B = b.name.toUpperCase();
-              if (A < B) {
-                return -1;
-              }
-              if (A > B) {
-                return 1;
-              } else {
-                return 0;
-              }
-            })
-            .filter(card => {
-              if (
-                this.state.colorState === "Colorless" &&
-                card.colors.length > 0
-              ) {
-                console.log(card.colors.length);
-                return null;
-              } else {
-                return card;
-              }
-            })
-            .filter(card => {
-              if (card.imageUrl !== undefined) {
-                return card;
-              } else {
-                return null;
-              }
-            })
-            .reduce((map, item) => {
-              const key = cb(item);
-
-              map.has(key) || map.set(key, item);
-
-              return map;
-            }, new Map())
-            .values()
-        ]
+        advancedSearch: !prevState.advancedSearch,
+        advancedButtonText: prevState.advancedSearch
+          ? "Advanced Search"
+          : "Basic Search"
       };
     });
-    console.log(this.state.results);
-    this.resultStatus(`${this.state.results.length} result(s) found`);
-  };
+  }
 
   handleChange(event) {
-    const { name, value, type, checked } = event.target;
+    const { name, value, type } = event.target;
+    const searchCard = [name] + "Card";
     if (type === "checkbox") {
       this.setState(prevState => {
-        let c = prevState.colors;
-        if (c.includes(name)) {
-          c = c.filter(col => col !== name);
+        let arr = prevState[name];
+        if (arr.includes(value)) {
+          arr = arr.filter(item => item !== value);
         } else {
-          c.push(name);
+          arr.push(value);
         }
         return {
-          colors: c,
-          colorState: "hasColor",
-          cardColor: prevState.cardColor.map(card => {
-            if (card.color !== name) {
+          [name]: arr,
+          colorless: name === "colors" ? false : prevState.colorless,
+          [searchCard]: prevState[searchCard].map(card => {
+            if (card.value !== value) {
               return card;
             }
-
             return {
               ...card,
               checked: !card.checked
@@ -130,42 +77,27 @@ class Search extends Component {
   }
 
   handleRadioChange(event) {
-    const { name, value } = event.target;
+    const { name } = event.target;
     this.setState(prevState => {
       return {
-        [name]: value,
+        [name]: !prevState[name],
         colors: [],
-        cardColor: prevState.cardColor.map(card => {
+        colorsCard: prevState.colorsCard.map(card => {
           return {
             ...card,
             checked: false
           };
         })
       };
-    }, console.log(this.state.cardColor));
-  }
-
-  resultStatus(message) {
-    this.setState({
-      status: message
-    });
+    }, console.log(this.state[name]));
   }
 
   handleSubmit(event) {
-    this.resultStatus("Loading results...");
     event.preventDefault();
-
-    mtg.card
-      .where({
-        name: `${this.state.cardName}`,
-        colors: `${this.state.colors}`
-      })
-      .then(result => {
-        this.uniqBy(result);
-      })
-      .catch(err => {
-        console.log("err", err);
-      });
+    this.props.searchQuery(this.state);
+    this.setState({
+      hasSearched: true
+    });
   }
 
   render() {
@@ -181,39 +113,44 @@ class Search extends Component {
             placeholder="Card Name"
             onChange={this.handleChange}
           />
-          <div className="color-container">
-            {this.state.cardColor.map(c => {
-              return (
-                <label key={c.identity} className={`color-check ${c.color}`}>
-                  <input
-                    type="checkbox"
-                    name={c.color}
-                    value={c.color}
-                    checked={c.checked}
-                    onChange={this.handleChange}
-                    className={c.color}
-                  />
-                  {c.identity}
-                </label>
-              );
-            })}
-            <label className="colorless-radio">
-              <input
-                type="radio"
-                name="colorState"
-                value="Colorless"
-                checked={this.state.colorState === "Colorless"}
-                onChange={this.handleRadioChange}
+          <ColorChoice
+            colorsCard={this.state.colorsCard}
+            handleChange={this.handleChange}
+            colorless={this.state.colorless}
+            radioChange={this.handleRadioChange}
+            noOtherColor={this.state.noOtherColor}
+          />
+          <RarityChoice
+            rarityCard={this.state.rarityCard}
+            handleChange={this.handleChange}
+          />
+          {this.state.advancedSearch ? (
+            <div>
+              <Types
+                typeCard={this.state.typeCard}
+                handleChange={this.handleChange}
               />
-              Colorless
-            </label>
-          </div>
+              <SubTypes
+                subTypeCard={this.state.subTypesCard}
+                handleChange={this.handleChange}
+              />
+            </div>
+          ) : null}
           <button type="submit">Search</button>
         </form>
-        <h1 className="search-status">{this.state.status}</h1>
+        <button onClick={this.handleClick} className={styles.advancedButton}>
+          {this.state.advancedButtonText}
+        </button>
+        {this.state.hasSearched ? (
+          <h1 className="search-status">
+            {this.props.loading
+              ? "Loading results..."
+              : `${this.props.results.length} results found!`}
+          </h1>
+        ) : null}
         <div className="display-board">
-          {this.state.results.map(card => {
-            return <DisplayImage srcData={card} key={card.id} />;
+          {this.props.results.map(card => {
+            return <ResultsBoard srcData={card} key={card.id} />;
           })}
         </div>
       </div>
@@ -221,4 +158,20 @@ class Search extends Component {
   }
 }
 
-export default Search;
+const mapStateToProps = state => {
+  return {
+    results: state.search.results,
+    loading: state.search.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    searchQuery: results => dispatch(searchQuery(results))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Search);

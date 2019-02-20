@@ -1,0 +1,57 @@
+.container {
+  min-height: 60vh;
+  max-width: 800px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+}
+
+.imageDisplayed {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.noImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+h1 {
+  margin: 0 0 25px;
+}
+
+img {
+  margin: 0 0 25px;
+}
+
+span {
+  font-weight: bold;
+}
+
+.dataContainer {
+  width: 90%;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 100px auto;
+  grid-gap: 10px;
+}
+
+.printings {
+  margin: 0 5px 0 0;
+  font-weight: normal;
+}
+
+.legalities {
+  margin: 0 5px 0 0;
+  font-weight: normal;
+}
+
+.flavour {
+  font-style: italic;
+}

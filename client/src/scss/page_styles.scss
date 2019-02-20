@@ -47,21 +47,26 @@ body {
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 2px;
-  &.blue {
+  &.Blue {
     color: blue;
   }
-  &.red {
+  &.Red {
     color: Red;
   }
-  &.white {
+  &.White {
     color: White;
     text-shadow: 1px 1px 2px black;
   }
-  &.black {
+  &.Black {
     color: Black;
   }
-  &.green {
+  &.Green {
     color: Green;
+  }
+  &.noOtherColor {
+    color: black;
+    font-style: italic;
+    font-size: 10px;
   }
 }
 
@@ -72,6 +77,25 @@ body {
   font-weight: bold;
   letter-spacing: 2px;
   color: #333;
+}
+
+.rarity-container {
+  background: rgb(219, 219, 219);
+  border-radius: 10px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 15px;
+  color: black;
+}
+
+.rarity-check {
+  height: 18px;
+  margin: 0 8px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 button {
@@ -91,6 +115,8 @@ button:hover {
 
 .search-status {
   margin: 0 0 15px;
+  font-size: 15px;
+  letter-spacing: 1px;
 }
 .display-board {
   display: grid;
@@ -113,19 +139,31 @@ button:hover {
   border: solid black 1px;
   background: white;
   color: black;
+  .image-link {
+    justify-self: end;
+    grid-area: image;
+  }
   img {
     width: 150px;
-    grid-area: image;
-    justify-self: end;
   }
   .image-header {
     display: flex;
     justify-content: flex-start;
     align-items: baseline;
     grid-area: header;
+    a {
+      text-decoration: none;
+      color: black;
+    }
     h1 {
       font-size: 22px;
       margin: 0 15px 0 0;
+    }
+    h2 {
+      margin: 0 15px 0 0;
+    }
+    h4 {
+      font-size: 12px;
     }
   }
   h3 {
