@@ -36,11 +36,11 @@ export const searchQuery = query => {
         colors: `${colors}`,
         rarity: `${query.rarity}`,
         types: `${query.type}`,
-        subtypes: `${query.subType}`
+        subtypes: `${query.subType}`,
+        cmc: `${query.cmc}`
       })
       .then(res => {
         const cb = o => o.name;
-        const colors = query.colors.filter(color => color !== "noOtherColor");
         return {
           results: [
             ...res

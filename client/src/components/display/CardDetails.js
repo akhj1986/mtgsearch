@@ -35,7 +35,7 @@ const CardDetails = props => {
               {card.legalities.map(legal => {
                 return (
                   <span key={legal.format} className={styles.legalities}>
-                    -- {legal.format} --
+                    - {legal.format} -
                   </span>
                 );
               })}

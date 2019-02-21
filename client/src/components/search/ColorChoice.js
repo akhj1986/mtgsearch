@@ -1,11 +1,16 @@
 import React from "react";
+import cn from "classnames";
+import styles from "./ColorChoice.module.scss";
 
 const ColorChoice = props => {
   return (
-    <div className="color-container">
+    <div className={styles.colorContainer}>
       {props.colorsCard.map(c => {
         return (
-          <label key={c.identity} className={`color-check ${c.value}`}>
+          <label
+            key={c.identity}
+            className={cn(styles.colorCheck, { [styles[c.value]]: c.value })}
+          >
             <input
               type="checkbox"
               name="colors"
@@ -18,7 +23,7 @@ const ColorChoice = props => {
           </label>
         );
       })}
-      <label className="colorless-radio">
+      <label className={styles.colorlessRadio}>
         <input
           type="radio"
           name="colorless"

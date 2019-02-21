@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
+import styles from "./Search.module.scss";
 import { searchQuery } from "../store/actions/searchQuery";
+import searchTerms from "./search/searchTerms.json";
+
 import ResultsBoard from "./search/ResultsBoard";
 import ColorChoice from "./search/ColorChoice";
 import RarityChoice from "./search/RarityChoice";
 import Types from "./search/Types";
 import SubTypes from "./search/SubTypes";
-import searchTerms from "./search/searchTerms.json";
-import styles from "./Search.module.scss";
+import ConvertedMC from "./search/ConvertedMC";
 
 class Search extends Component {
   constructor(props) {
@@ -24,6 +27,7 @@ class Search extends Component {
       type: "",
       subTypesCard: searchTerms.subTypesCard,
       subType: "",
+      cmc: "",
       advancedSearch: false,
       advancedButtonText: "Advanced Search"
     };
@@ -35,12 +39,20 @@ class Search extends Component {
 
   handleClick() {
     this.setState(prevState => {
-      return {
-        advancedSearch: !prevState.advancedSearch,
-        advancedButtonText: prevState.advancedSearch
-          ? "Advanced Search"
-          : "Basic Search"
-      };
+      if (prevState.advancedSearch === true) {
+        return {
+          advancedSearch: false,
+          advancedButtonText: "Advanced Search",
+          type: "",
+          subType: "",
+          cmc: ""
+        };
+      } else {
+        return {
+          advancedSearch: true,
+          advancedButtonText: "Basic Search"
+        };
+      }
     });
   }
 
@@ -89,7 +101,7 @@ class Search extends Component {
           };
         })
       };
-    }, console.log(this.state[name]));
+    });
   }
 
   handleSubmit(event) {
@@ -102,10 +114,10 @@ class Search extends Component {
 
   render() {
     return (
-      <div className="search-page">
+      <div className={styles.searchPage}>
         <h1>Magic: The Gathering</h1>
         <h2>Card search engine</h2>
-        <form className="search-form" onSubmit={this.handleSubmit}>
+        <form className={styles.searchForm} onSubmit={this.handleSubmit}>
           <input
             name="cardName"
             type="text"
@@ -125,13 +137,17 @@ class Search extends Component {
             handleChange={this.handleChange}
           />
           {this.state.advancedSearch ? (
-            <div>
+            <div className={styles.advancedSearch}>
               <Types
                 typeCard={this.state.typeCard}
                 handleChange={this.handleChange}
               />
               <SubTypes
                 subTypeCard={this.state.subTypesCard}
+                handleChange={this.handleChange}
+              />
+              <ConvertedMC
+                cmc={this.state.cmc}
                 handleChange={this.handleChange}
               />
             </div>
@@ -142,13 +158,13 @@ class Search extends Component {
           {this.state.advancedButtonText}
         </button>
         {this.state.hasSearched ? (
-          <h1 className="search-status">
+          <h1 className={styles.searchStatus}>
             {this.props.loading
               ? "Loading results..."
               : `${this.props.results.length} results found!`}
           </h1>
         ) : null}
-        <div className="display-board">
+        <div className={styles.displayBoard}>
           {this.props.results.map(card => {
             return <ResultsBoard srcData={card} key={card.id} />;
           })}

@@ -21,6 +21,8 @@ const searchReducer = (state = initState, action) => {
         loading: false,
         error: action.payload.error
       };
+
+    default:
   }
   return state;
 };
