@@ -4,7 +4,7 @@ import styles from "./ColorChoice.module.scss";
 
 const ColorChoice = props => {
   return (
-    <div className={styles.colorContainer}>
+    <div className={styles.container}>
       {props.colorsCard.map(c => {
         return (
           <label

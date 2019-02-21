@@ -152,7 +152,9 @@ class Search extends Component {
               />
             </div>
           ) : null}
-          <button type="submit">Search</button>
+          <button type="submit" className={styles.submitButton}>
+            Search
+          </button>
         </form>
         <button onClick={this.handleClick} className={styles.advancedButton}>
           {this.state.advancedButtonText}

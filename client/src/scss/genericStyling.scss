@@ -1,6 +1,9 @@
+@import "resets.scss";
+
 @import url("https://fonts.googleapis.com/css?family=Philosopher");
 
 body {
+  background-color: black;
   font-family: "Philosopher", sans-serif;
   color: white;
 }

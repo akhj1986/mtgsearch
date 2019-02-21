@@ -32,6 +32,25 @@
   height: 40px;
   width: 100px;
   background: black;
+  border: none;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.submitButton {
+  margin: 0 0 15px;
+  height: 40px;
+  width: 150px;
+  border: none;
+  background: rgb(99, 99, 99);
+  color: white;
+  letter-spacing: 2px;
+  font-size: 20px;
+  border-radius: 15px;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .advancedSearch {

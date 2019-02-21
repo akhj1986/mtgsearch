@@ -3,7 +3,7 @@
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: 20px 25px repeat(2, 80px);
+  grid-template-rows: 20px auto repeat(2, 80px);
   grid-template-areas:
     "header header header header image image"
     "mid-left mid-left mid-mid mid-mid image image"

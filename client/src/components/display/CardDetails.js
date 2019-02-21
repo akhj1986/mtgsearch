@@ -9,7 +9,9 @@ const CardDetails = props => {
       {card ? (
         <div className={styles.imageDisplayed}>
           <h1>{card.name}</h1>
-          <img src={card.imageUrl} alt={card.name} />
+          <a href={card.imageUrl} target="_blank">
+            <img src={card.imageUrl} alt={card.name} />
+          </a>
           <div className={styles.dataContainer}>
             <span>Type:</span>
             <p>{card.type}</p>
@@ -20,7 +22,7 @@ const CardDetails = props => {
             <span>Flavour text:</span>{" "}
             <p className={styles.flavour}>{card.flavor}</p>
             <span>Printings:</span>{" "}
-            <p>
+            <p className={styles.printContainer}>
               {card.printings.map(set => {
                 return (
                   <span key={set} className={styles.printings}>

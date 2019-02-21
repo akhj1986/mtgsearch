@@ -1,11 +1,12 @@
 import React from "react";
+import styles from "./RarityChoice.module.scss";
 
 const RarityChoice = props => {
   return (
-    <div className="rarity-container">
+    <div className={styles.container}>
       {props.rarityCard.map(c => {
         return (
-          <label key={c.identity} className={`rarity-check ${c.value}`}>
+          <label key={c.identity} className={styles.rarityCheck}>
             <input
               type="checkbox"
               name="rarity"
